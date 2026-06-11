@@ -34,7 +34,7 @@ class UserController extends Controller
         ]);
 
         ActivityLogService::log(
-            auth()->user()->email .
+            auth()->user()->email.
             " changed role for {$user->email} to {$validated['role']}"
         );
 

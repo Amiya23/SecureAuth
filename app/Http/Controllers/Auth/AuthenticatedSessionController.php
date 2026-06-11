@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\ActivityLogService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Services\ActivityLogService;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,11 +29,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-    if ($request->user()->role === 'admin') {
-    return redirect()->route('admin.dashboard');
-}
+        if ($request->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
 
-return redirect()->route('dashboard');
+        return redirect()->route('dashboard');
     }
 
     /**
@@ -42,7 +42,7 @@ return redirect()->route('dashboard');
     public function destroy(Request $request): RedirectResponse
     {
         ActivityLogService::log('User Logout');
-        
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

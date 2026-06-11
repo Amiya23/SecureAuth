@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ActivityLogController;
-
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,7 +32,7 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
-        
+
         Route::get(
             '/activity-logs',
             [ActivityLogController::class, 'index']
@@ -44,4 +43,3 @@ Route::middleware(['auth', 'admin'])
             [UserController::class, 'updateRole']
         )->name('users.role');
     });
-

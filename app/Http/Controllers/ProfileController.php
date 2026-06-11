@@ -8,8 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
@@ -27,40 +27,40 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    $user->name = $request->name;
-    $user->email = $request->email;
+        $user->name = $request->name;
+        $user->email = $request->email;
 
-    if ($user->isDirty('email')) {
-        $user->email_verified_at = null;
-    }
-
-    if ($request->hasFile('avatar')) {
-
-        $oldAvatar = $user->getOriginal('avatar');
-
-        $path = $request->file('avatar')
-            ->store('avatars', 'public');
-
-        $user->avatar = $path;
-
-        if (
-            $oldAvatar &&
-            Storage::disk('public')->exists($oldAvatar)
-        ) {
-            Storage::disk('public')->delete($oldAvatar);
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
+
+        if ($request->hasFile('avatar')) {
+
+            $oldAvatar = $user->getOriginal('avatar');
+
+            $path = $request->file('avatar')
+                ->store('avatars', 'public');
+
+            $user->avatar = $path;
+
+            if (
+                $oldAvatar &&
+                Storage::disk('public')->exists($oldAvatar)
+            ) {
+                Storage::disk('public')->delete($oldAvatar);
+            }
+        }
+
+        $user->save();
+
+        ActivityLogService::log('Profile Updated');
+
+        return Redirect::route('profile.edit')
+            ->with('status', 'profile-updated');
     }
-
-    $user->save();
-
-    ActivityLogService::log('Profile Updated');
-
-    return Redirect::route('profile.edit')
-        ->with('status', 'profile-updated');
-}
 
     /**
      * Delete the user's account.
